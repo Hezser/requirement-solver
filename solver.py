@@ -1,29 +1,67 @@
-objs = []
-reqs = []
+# TODO: We are not setting nodes to be children of all parents which they require, only the first parent found. To fix this, we probably need to make build_subtree non-recursive and perform within a while loop over obj not being empty
 
-def solve(objs, reqs):
-    root = []
-    for i in range(len(reqs)):
-        if not reqs[i]:
-            root.append(objs[i])
-    if not root:
-        print("Your requirements are cyclical")
-        return []
-    return [root] + subtree([root], objs, reqs)
+class Node:
 
-def subtree(tree, objs, reqs):
-    node = []
-    for i in range(len(reqs)):
-        if usable(tree, reqs[i]):
-            node.append(objs[i])
-    return [node] + subtree(tree + [node], objs, reqs)
+    obj      = {}
+    children = []
+    # parent   = None
 
-def usable(tree, req):
-    for r in req:
-        found = False
-        for node in tree:
-            if r in node:
-                found = True
-        if not found:
+    def __init__(self, obj):
+        self.objs = objs
+
+    # def add_object(self, obj):
+    #     self.objs.update(obj)
+
+    def add_child(self, child):
+        self.children.append(child)
+
+    # def set_parent(self, parent):
+    #     self.parent = parent
+
+class Solver:
+
+    def __init__(self, objs, reqs):
+        self.objs = objs
+        self.reqs = reqs
+
+    def solve():
+        root = Node(None)
+        for (k, v) in objs.items():
+            if not reqs[k]:
+                # child = Node({k, v}).add_parent(root)
+                root.add_child(Node({k, v}))
+                del objs[k]
+        if not root.children:
+            print("Your requirements are cyclical")
+            return None
+        for child in root.children:
+            build_subtree(child, root)
+        return root
+
+    def build_subtree(parent, root):
+        if not objs:
+            return
+        for (k, v) in objs.items():
+            if usable(parent, reqs[k]):
+                # child = Node({k, v}).add_parent(parent)
+                parent.add_child(Node({k, v}))
+                del objs[k]
+        for child in parent.children:
+            build_subtree(child)
+
+    def usable(node, req, root):
+        for obj in req:
+            if not find(obj, root):
+                return False
+        return True
+
+    def find(req, root):
+        if not root.children:
             return False
-    return True
+        if obj in root.obj:
+            return True
+        for child in root.children:
+            if find(req, child):
+                return True
+        return False
+
