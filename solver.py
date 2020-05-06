@@ -1,22 +1,16 @@
 # TODO: We are not setting nodes to be children of all parents which they require, only the first parent found. To fix this, we probably need to make build_subtree non-recursive and perform within a while loop over obj not being empty
+# TODO: Different approach - Initially, create all nodes, and then create edges based on requirements. However, this does not allow for dynamic checks of cycles etc.
 
 class Node:
 
     obj      = {}
     children = []
-    # parent   = None
 
     def __init__(self, obj):
         self.objs = objs
 
-    # def add_object(self, obj):
-    #     self.objs.update(obj)
-
     def add_child(self, child):
         self.children.append(child)
-
-    # def set_parent(self, parent):
-    #     self.parent = parent
 
 class Solver:
 
@@ -28,7 +22,6 @@ class Solver:
         root = Node(None)
         for (k, v) in objs.items():
             if not reqs[k]:
-                # child = Node({k, v}).add_parent(root)
                 root.add_child(Node({k, v}))
                 del objs[k]
         if not root.children:
@@ -43,7 +36,6 @@ class Solver:
             return
         for (k, v) in objs.items():
             if usable(parent, reqs[k]):
-                # child = Node({k, v}).add_parent(parent)
                 parent.add_child(Node({k, v}))
                 del objs[k]
         for child in parent.children:
