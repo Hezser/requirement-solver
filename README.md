@@ -1,1 +1,1 @@
-A requirement solver algorithm which creates a graphical representation of a tree-like solution for the problem of objects having temporal requirements between them (i.e.: in order to start dealing with an object you have to finish dealing with another).
+A requirement solver algorithm which arives at a tree-like solution for the problem of objects having temporal requirements between them (i.e.: in order to start dealing with an object you have to finish dealing with another).
